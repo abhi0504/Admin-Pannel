@@ -30,7 +30,7 @@ let email = ""
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect("mongodb://localhost:27017/userDB", {useNewUrlParser: true ,useFindAndModify: false , useUnifiedTopology: true});
+mongoose.connect("mongodb+srv://abhishek_0504:9971749520a@cluster0-b6e9z.mongodb.net/test?retryWrites=true&w=majority/userDB", {useNewUrlParser: true ,useFindAndModify: false , useUnifiedTopology: true});
 mongoose.set("useCreateIndex", true);
 
 const userSchema = new mongoose.Schema ({
@@ -263,6 +263,12 @@ User.find({username:req.body.username} , function(err , founduser)
 
 });
 
-app.listen(3000, function() {
+
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 3000;
+}
+
+app.listen(port, function() {
   console.log("Server started on port 3000.");
 });
