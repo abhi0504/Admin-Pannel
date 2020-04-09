@@ -30,7 +30,7 @@ let email = ""
 app.use(passport.initialize());
 app.use(passport.session());
 
-mongoose.connect("mongodb+srv://abhishek_0504:9971749520a@cluster0-b6e9z.mongodb.net/test?retryWrites=true&w=majority/userDB", {useNewUrlParser: true ,useFindAndModify: false , useUnifiedTopology: true});
+mongoose.connect("mongodb+srv://abhishek_0504:9971749520a@cluster0-b6e9z.mongodb.net/userDB", {useNewUrlParser: true ,useFindAndModify: false , useUnifiedTopology: true});
 mongoose.set("useCreateIndex", true);
 
 const userSchema = new mongoose.Schema ({
@@ -68,7 +68,6 @@ passport.use(new GoogleStrategy({
     userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo"
   },
   function(accessToken, refreshToken, profile, cb) {
-    console.log(profile);
 
     User.findOrCreate({ googleId: profile.id }, function (err, user) {
       return cb(err, user);
@@ -158,22 +157,37 @@ app.get("/added" , function(req,res)
   res.render("added")
 })
 
+app.get("/cdisable" , function(req , res)
+{
+  res.render("cdisable")
+})
+
 app.post("/disable" , function(req , res)
 {
   const un = req.body.username;
-  var myquery = { username: un };
-  var newvalues = { $set: { permission: false } };
- User.findOneAndUpdate(myquery,newvalues, function(err, user)
-{
-  if(err)
+  if(un === "admin@123.com")
   {
-    console.log(err);
+    res.redirect("cdisable")
   }
+
   else{
-    console.log(user);
-    res.redirect("disable")
+
+    var myquery = { username: un };
+    var newvalues = { $set: { permission: false } };
+
+     User.findOneAndUpdate(myquery,newvalues, function(err, user)
+  {
+    if(err)
+    {
+      console.log(err);
+    }
+    else{
+          res.redirect("disable")
+    }
+  })
+
   }
-})
+
 })
 
 app.post("/register", function(req, res){
